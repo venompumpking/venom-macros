@@ -138,7 +138,7 @@ def create_app():
     def serve_admin():
         if _os.path.exists(_admin_html_path):
             return _send_file(_admin_html_path)
-        return _make_response(f'Admin panel not found - looked at: {_admin_html_path} - files in /app: {_os.listdir("/app")}', 404)
+        return _make_response('Admin panel not found', 404)
 
     from web.routes import web_bp
     app.register_blueprint(web_bp)
