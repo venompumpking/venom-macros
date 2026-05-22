@@ -123,15 +123,13 @@ def create_app():
     _seed_products(app)
 
     from auth.routes import auth_bp
-    from web.routes import web_bp
     from bot.routes import bot_bp
     from admin.routes import admin_bp
     app.register_blueprint(auth_bp)
-    app.register_blueprint(web_bp)
     app.register_blueprint(bot_bp)
     app.register_blueprint(admin_bp)
 
-    # Serve admin.html directly from this file's directory
+    # Serve admin.html directly — must be registered BEFORE web_bp catch-all
     import os as _os
     from flask import send_file as _send_file, make_response as _make_response
     _admin_html_path = _os.path.join(_os.path.dirname(__file__), 'admin.html')
@@ -140,7 +138,10 @@ def create_app():
     def serve_admin():
         if _os.path.exists(_admin_html_path):
             return _send_file(_admin_html_path)
-        return _make_response('Admin panel not found', 404)
+        return _make_response('Admin panel not found - file missing', 404)
+
+    from web.routes import web_bp
+    app.register_blueprint(web_bp)
 
     # CORS: allow website origin for API requests
     _allowed_origins = {
