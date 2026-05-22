@@ -5,14 +5,13 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r /app/requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/
+COPY . .
 RUN mkdir -p /app/website/public
+RUN cp /app/admin.html /app/website/public/admin.html 2>/dev/null || true
 RUN rm -f /app/.env
+RUN chmod +x /app/start.sh
 
-EXPOSE 8080
-
-ENV PORT=8080
-CMD gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120 wsgi:application
+CMD ["/bin/sh", "/app/start.sh"]
