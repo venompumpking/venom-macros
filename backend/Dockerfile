@@ -5,11 +5,11 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY backend/requirements.txt /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-COPY backend/ /app/
-COPY website/ /app/website/
+COPY . /app/
+RUN mkdir -p /app/website/public
 RUN rm -f /app/.env
 
 EXPOSE 8080
