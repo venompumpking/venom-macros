@@ -131,6 +131,17 @@ def create_app():
     app.register_blueprint(bot_bp)
     app.register_blueprint(admin_bp)
 
+    # Serve admin.html directly from this file's directory
+    import os as _os
+    from flask import send_file as _send_file, make_response as _make_response
+    _admin_html_path = _os.path.join(_os.path.dirname(__file__), 'admin.html')
+
+    @app.route('/admin.html')
+    def serve_admin():
+        if _os.path.exists(_admin_html_path):
+            return _send_file(_admin_html_path)
+        return _make_response('Admin panel not found', 404)
+
     # CORS: allow website origin for API requests
     _allowed_origins = {
         app.config.get('SITE_URL', 'https://zenithmacros.store').rstrip('/'),
